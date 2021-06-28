@@ -131,6 +131,9 @@ def FoodDeleteView(request, kpk, fpk):
         return HttpResponseRedirect(reverse_lazy('kitchen:kitchen_detail',args=(kpk,)))
     return render(request, 'food/food_confirm_delete.html',{'name':food_obj.name, 'kitchen_id': kpk})
 
+def profile(request):
+    return HttpResponse('this is the profile page')
+
 def register(request):
     if request.method == 'POST':
         f = EaterCreationForm(request.POST)
