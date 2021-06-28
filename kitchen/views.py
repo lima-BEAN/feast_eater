@@ -1,4 +1,5 @@
 import random
+from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -14,7 +15,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 # from django.contrib.auth.mixins import LoginRequiredMixin
 # from django.contrib.auth.decorators import login_required
 
-from kitchen.forms import KitchenForm, FoodForm
+from kitchen.forms import KitchenForm, FoodForm, EaterCreationForm
 from kitchen.models import Kitchen, Food
 
 def home(request):
@@ -129,6 +130,21 @@ def FoodDeleteView(request, kpk, fpk):
         food_obj.delete()
         return HttpResponseRedirect(reverse_lazy('kitchen:kitchen_detail',args=(kpk,)))
     return render(request, 'food/food_confirm_delete.html',{'name':food_obj.name, 'kitchen_id': kpk})
+
+def register(request):
+    if request.method == 'POST':
+        f = EaterCreationForm(request.POST)
+        print('is the EATERFORM WORKING: {}'.format(f))
+        if f.is_valid():
+            f.save()
+            messages.success(request, 'Account created successfully')
+            return HttpResponseRedirect(reverse_lazy('kitchen:login'))
+        else:
+            return HttpResponse('Form not valid')
+    else:
+        f = EaterCreationForm()
+    return render(request, 'registration/register.html', {'form': f})
+
 
 def check():
     pass
