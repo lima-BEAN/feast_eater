@@ -10,13 +10,16 @@ from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 #TODO: Require login to create App in LimaBeanLab Apps section
 # from django.contrib.auth.mixins import LoginRequiredMixin
 # from django.contrib.auth.decorators import login_required
 
-from kitchen.forms import KitchenForm, FoodForm, EaterCreationForm
-from kitchen.models import Kitchen, Food
+from kitchen.forms import KitchenForm, NewCustomerForm
+from kitchen.models import Kitchen, Food, Customer
+
+from django.views.generic.edit import FormView
 
 def home(request):
     return HttpResponse("It works")
@@ -29,6 +32,41 @@ def home(request):
 #        context['number'] = random.randrange(1, 100)
 #        context['latest_kitchen'] = Kitchen.objects.all()[:3]
 #        return context
+
+# class CustomerCreateView(LoginRequiredMixin, CreateView):
+class CustomerCreateView(CreateView):
+    model = Customer
+    # fields = ['username', 'email', 'password', 'github'] # LEAKS DATA FOR PASSWORD IN DB
+    template_name = 'registration/new_customer.html'
+    success_url = reverse_lazy('kitchen:index')
+    login_url = '/login/'
+
+
+    # @login_required --> What if non-user; how to initially register
+    def new_customer(request):
+        if request.method == 'POST':
+            f = NewCustomerForm(request.POST)
+            if f.is_valid():
+                f.save()
+                messages.success(request, 'Account created successfully')
+                return HttpResponseRedirect(reverse_lazy('kitchen:login'))
+            else:
+                return HttpResponse('Form not valid')
+        else:
+            f = NewCustomerForm()
+        return render(request, 'registration/new_customer.html', {'form': f})
+
+# class NewCustomerFormView(FormView):
+#     template_name = 'registration/new_customer.html'
+#     form_class = NewCustomerForm
+#     success_url = '/kitchen/'
+#
+#     def form_valid(self, form):
+#         # This method is called when valid form data has been POSTed.
+#         # It should return an HttpResponse.
+#         form.send_email()
+#         return super().form_valid(form)
+
 
 class KitchenListView(ListView):
     model = Kitchen
@@ -136,8 +174,8 @@ def profile(request):
 
 def register(request):
     if request.method == 'POST':
-        f = EaterCreationForm(request.POST)
-        print('is the EATERFORM WORKING: {}'.format(f))
+        f = NewCustomerForm(request.POST)
+        print('is the CUSTOMERFORM WORKING: {}'.format(f))
         if f.is_valid():
             f.save()
             messages.success(request, 'Account created successfully')
@@ -145,7 +183,7 @@ def register(request):
         else:
             return HttpResponse('Form not valid')
     else:
-        f = EaterCreationForm()
+        f = NewCustomerForm()
     return render(request, 'registration/register.html', {'form': f})
 
 

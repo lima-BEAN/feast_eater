@@ -3,19 +3,29 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-class Eater(models.Model):
-    # first name, last name, email, password are all inheritied from User
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=50, null=False)
-    last_name = models.CharField(max_length=50, null=False)
+class Customer(User):
     question_1 = models.CharField(max_length=200, null=False)
     answer_1 = models.CharField(max_length=200, null=False)
     question_2 = models.CharField(max_length=200, null=False)
     answer_2 = models.CharField(max_length=200, null=False)
-    is_provider = models.BooleanField(null=False)
-    # TODO: associate kitchen with provider if provider
+    is_provider = models.BooleanField(default=False)
+
     def __str__(self):
-        return self.user.username
+        return self.username
+
+# class Eater(models.Model):
+#     # first name, last name, email, password are all inheritied from User
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     first_name = models.CharField(max_length=50, null=False)
+#     last_name = models.CharField(max_length=50, null=False)
+#     question_1 = models.CharField(max_length=200, null=False)
+#     answer_1 = models.CharField(max_length=200, null=False)
+#     question_2 = models.CharField(max_length=200, null=False)
+#     answer_2 = models.CharField(max_length=200, null=False)
+#     is_provider = models.BooleanField(null=False)
+#     # TODO: associate kitchen with provider if provider
+#     def __str__(self):
+#         return self.user.username
 
 # class Provider(Eater):
 #     def __str__(self):

@@ -17,7 +17,7 @@ from django.urls import path, include, re_path
 from django.contrib.auth import views as auth_views
 
 from . import views
-
+from kitchen.views import CustomerCreateView
 app_name = 'kitchen'
 
 urlpatterns = [
@@ -40,6 +40,8 @@ urlpatterns = [
 
     path('accounts/profile/', views.profile, name='profile'),
 
-    re_path(r'^register/$', views.register, name='register'),
+    # re_path(r'^register/$', views.register, name='register'),
+
+    re_path(r'^register/$', CustomerCreateView.new_customer, name='new-customer'),
 
 ]
