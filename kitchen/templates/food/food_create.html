@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if error %}
+    <div style="color:red;">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'kitchen:food_create' kitchen_id %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p}}
+        <button type="submit" value="Submit">Submit</button>
+        <a href="{% url 'kitchen:kitchen_detail' kitchen_id %}" > Cancel </a>
+    </form>
+{% endblock %}

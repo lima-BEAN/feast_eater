@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form method="POST">
+      {% csrf_token %}
+      <p>Are you sure you want to delete: <br> "{{ name }}"</p>
+      <button type="submit" value="Confirm">Confirm</button>
+    </form>
+    <h3>Go back to <a href="{% url 'kitchen:kitchen_detail' kitchen_id %}">Kitchen Detail</a></h3>
+{% endblock %}
+
